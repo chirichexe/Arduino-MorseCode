@@ -2,8 +2,10 @@
 #include <Wire.h>
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
-const int pinLed = 8;
-const int pinSuono = 7;
+const int pinBottone = 8;
+int pinBottoneInvia = 4;
+const int pinLed = 7;
+const int pinSuono = 6;
 int intensitaSuono = 300;
 int velocita = 50;
 char c = "";
@@ -12,12 +14,33 @@ String parola = "";
 void setup() {
   Serial.begin(9600);
   pinMode(pinLed, OUTPUT);
+  pinMode(pinBottone, INPUT);
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
+
 }
 
 void loop() {
+
+  char res[] = "";
+  int t = contaTempo();
+  if (t <= 250 ){
+    strcat(res, "0");
+  }
+  else if(t > 250){
+    strcat(res, "1");
+  }
+  else strcat(res, " ");
+  Serial.println(t);
+
+  int get = digitalRead(pinBottoneInvia);
+  if (get == 1){
+    Serial.println(codifica());
+  }
+  
+  
+  /*
   if (Serial.available()){
     c = Serial.read();
     decodifica(c);
@@ -34,8 +57,44 @@ void loop() {
      
     }
   }
+  */
 }
-  
+
+//SEZIONE CODIFICA
+
+
+String codifica(){
+  char res[] = "";
+  int t = contaTempo();
+  if (t <= 250 ){
+    strcat(res, "0");
+  }
+  else if(t > 250){
+    strcat(res, "1");
+  }
+  else strcat(res, " ");
+  return res;
+}
+
+  int press = 0;
+  int timePress = 0;
+  int time = 0;
+  int conteggio = 0;
+int contaTempo(){
+  press = digitalRead(pinBottone);
+    if ((press==1) && (conteggio == 0)){
+      conteggio = 1;
+      timePress = millis();
+    }
+
+    if ((conteggio == 1) && (press==0)){
+      conteggio = 0;
+      time = millis()- timePress;
+      return time;
+    }
+  }
+
+//SEZIONE DECODIFICA
 
 void decodifica(char c){
   if (c == '0') {
