@@ -22,7 +22,7 @@ void setup() {
 }
 
 void loop() {
-
+  
   char res[] = "";
   int t = contaTempo();
   if (t <= 250 ){
@@ -32,12 +32,8 @@ void loop() {
     strcat(res, "1");
   }
   else strcat(res, " ");
-  Serial.println(t);
-
-  int get = digitalRead(pinBottoneInvia);
-  if (get == 1){
-    Serial.println(codifica());
-  }
+  
+  Serial.println(res);
   
   
   /*
