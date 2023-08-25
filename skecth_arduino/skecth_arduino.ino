@@ -3,7 +3,9 @@
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 const int pinBottone = 8;
-int pinBottoneInvia = 4;
+const int pinBottoneSpazio = 4;
+const int pinBottoneInvia = 3;
+
 const int pinLed = 7;
 const int pinSuono = 6;
 int intensitaSuono = 300;
@@ -15,6 +17,8 @@ void setup() {
   Serial.begin(9600);
   pinMode(pinLed, OUTPUT);
   pinMode(pinBottone, INPUT);
+  pinMode(pinBottoneSpazio, INPUT);
+  pinMode(pinBottoneInvia, INPUT);
   lcd.init();
   lcd.backlight();
   lcd.setCursor(0, 0);
@@ -23,10 +27,12 @@ void setup() {
 
 
   int press = 0;
+  int spazio = 0;
+  int stampa = 0;
   int timePress = 0;
   int time = 0;
   int conteggio = 0;
-  char res[] = " ";
+  char res[100] = " ";
   int t = 0;
 void loop() {
   press = digitalRead(pinBottone);
@@ -38,16 +44,27 @@ void loop() {
     if ((conteggio == 1) && (press==0)){
       conteggio = 0;
       time = millis()- timePress;
-      Serial.println(time);
-        if (time <= 250 ){
+      //Serial.println(time);
+        if ( time > 0 && time <= 250 ){
           strcat(res, "0");
         }
       else if(time > 250){
         strcat(res, "1");
       }
-      else strcat(res, " ");
-      Serial.println(timePress);
+      //Serial.println(res);
     }
+
+  spazio = digitalRead(pinBottoneSpazio);
+  if (spazio == 1){
+    strcat(res, "-");
+    delay(500);
+  }
+
+  stampa = digitalRead(pinBottoneInvia);
+  if (stampa == 1){
+    Serial.println(res);
+    delay(500);
+  }
   
   
   /*
