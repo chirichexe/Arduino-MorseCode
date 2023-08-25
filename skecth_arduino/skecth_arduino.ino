@@ -21,19 +21,33 @@ void setup() {
 
 }
 
+
+  int press = 0;
+  int timePress = 0;
+  int time = 0;
+  int conteggio = 0;
+  char res[] = " ";
+  int t = 0;
 void loop() {
-  
-  char res[] = "";
-  int t = contaTempo();
-  if (t <= 250 ){
-    strcat(res, "0");
-  }
-  else if(t > 250){
-    strcat(res, "1");
-  }
-  else strcat(res, " ");
-  
-  Serial.println(res);
+  press = digitalRead(pinBottone);
+    if ((press==1) && (conteggio == 0)){
+      conteggio = 1;
+      timePress = millis();
+    }
+
+    if ((conteggio == 1) && (press==0)){
+      conteggio = 0;
+      time = millis()- timePress;
+      Serial.println(time);
+        if (time <= 250 ){
+          strcat(res, "0");
+        }
+      else if(time > 250){
+        strcat(res, "1");
+      }
+      else strcat(res, " ");
+      Serial.println(timePress);
+    }
   
   
   /*
@@ -72,10 +86,7 @@ String codifica(){
   return res;
 }
 
-  int press = 0;
-  int timePress = 0;
-  int time = 0;
-  int conteggio = 0;
+
 int contaTempo(){
   press = digitalRead(pinBottone);
     if ((press==1) && (conteggio == 0)){
